@@ -42,10 +42,11 @@ class TeamProvider:
     def get_matches_for_team(self, team_id):
         matches = []
 
-        for i in [1]:
+        for i in range(1, 10):
             data = self.invoke_url('/esports/teams/' + team_id + '/matches?page=' + str(i))
             mwon = re.findall('<a class="won" href="/matches/(\d+)">Won Match</a>', data)
             mlost = re.findall('<a class="lost" href="/matches/(\d+)">Lost Match</a>', data)
+            print "\t\tpage #", i
             if not mwon and not mlost:
                 return matches
             for w in mwon:
