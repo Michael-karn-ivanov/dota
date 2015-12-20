@@ -13,20 +13,24 @@ matches[matches$winner == "radiant", "loser_id"] <- matches[matches$winner == "r
 levels(matches[,"winner_id"]) <- unique(c(matches[,"winner_id"], matches[,"loser_id"]))
 levels(matches[,"loser_id"]) <- unique(c(matches[,"winner_id"], matches[,"loser_id"]))
 
-nrow (matches)
 matches$result <- rep (1, nrow (matches))
 
 matches <- matches[!is.na (matches$winner_id),]
 matches <- matches[!is.na (matches$loser_id),]
 
-length(unique(matches$winner_id))
-length(unique(matches$loser_id))
+winner.frame <- as.data.frame(cbind(matches$winner_id, matches$match_id))
+loser.frame <- as.data.frame(cbind(matches$loser_id, matches$match_id))
+colnames(winner.frame) <- c("id", "match_id")
+colnames(loser.frame) <- c("id", "match_id")
+winner.frame$match_id <- as.factor(winner.frame$match_id)
+loser.frame$match_id <- as.factor(loser.frame$match_id)
+# 
+# test <- matches[matches$loser_id %in% matches$winner_id, ]
+# test <- test[test$winner_id %in% matches$loser_id, ]
+# length(unique(test$winner_id))
+# length(unique(test$loser_id))
 
-test <- matches[matches$loser_id %in% matches$winner_id, ]
-test <- test[test$winner_id %in% matches$loser_id, ]
-length(unique(test$winner_id))
-length(unique(test$loser_id))
-
-summary(dotamatch.model <- BTm(result, player1 = test$winner_id, 
-                               player2 = test$loser_id, data = test, id = "match_id"))
+summary(dotamatch.model <- BTm(result, player1 = winner.frame, 
+                               player2 = loser.frame, data = test, 
+                               id = "match_id"))
 
