@@ -5,7 +5,7 @@ matches <- unique(matches)
 colnames(matches) <- c("match_id", "date", "radiant_id", "dire_id", "winner", "firstblood", "league_id")
 write_csv(matches, "matches.csv")
 
-teams <- read.table("../data/teams.csv", sep="\t", header=FALSE)
+teams <- read.table("../data/teams.csv", sep=",", header=FALSE)
 teams <- unique(teams)
 colnames(teams) <- c("team_id", "name", "href")
 write_csv(teams, "teams.csv")
