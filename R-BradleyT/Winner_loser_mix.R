@@ -1,6 +1,7 @@
 library(readr)
 library(BradleyTerry2)
 library(reshape)
+source("Kelly.R")
 
 inv_logit <- function(p) {
   exp(p) / (1 + exp(p))
@@ -54,5 +55,5 @@ dota_probs <- outer(dotamatch.abilities, dotamatch.abilities, prob_BT)
 diag(dota_probs) <- 0
 dota_probs <- melt(dota_probs)
 
-
+Kelly(dota_probs, "3", "4", 1.6, 1.5)
 
