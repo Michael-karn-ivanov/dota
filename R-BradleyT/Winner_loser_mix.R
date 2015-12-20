@@ -13,5 +13,20 @@ matches[matches$winner == "radiant", "loser_id"] <- matches[matches$winner == "r
 levels(matches[,"winner_id"]) <- unique(c(matches[,"winner_id"], matches[,"loser_id"]))
 levels(matches[,"loser_id"]) <- unique(c(matches[,"winner_id"], matches[,"loser_id"]))
 
-summary(dotamatch.model <- BTm(player1 = winner_id, player2 = loser_id, data = matches))
+nrow (matches)
+matches$result <- rep (1, nrow (matches))
+
+matches <- matches[!is.na (matches$winner_id),]
+matches <- matches[!is.na (matches$loser_id),]
+
+length(unique(matches$winner_id))
+length(unique(matches$loser_id))
+
+test <- matches[matches$loser_id %in% matches$winner_id, ]
+test <- test[test$winner_id %in% matches$loser_id, ]
+length(unique(test$winner_id))
+length(unique(test$loser_id))
+
+summary(dotamatch.model <- BTm(result, player1 = test$winner_id, 
+                               player2 = test$loser_id, data = test, id = "match_id"))
 
