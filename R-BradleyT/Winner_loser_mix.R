@@ -1,10 +1,14 @@
 library(readr)
 library(BradleyTerry2)
 library(reshape)
-source("Kelly.R")
+#source("Kelly.R")
+
+#inv_logit <- function(p) {
+#  exp(p) / (1 + exp(p))
+#}
 
 inv_logit <- function(p) {
-  exp(p) / (1 + exp(p))
+  exp(p)
 }
 
 prob_BT <- function(ability_1, ability_2) {
@@ -47,6 +51,7 @@ summary(dotamatch.model <- BTm(result, player1 = winner.frame,
                                id = "id"))
 
 dotamatch.output <- data.frame(BTabilities(dotamatch.model))
+dotamatch.output <- dotamatch.output[(dotamatch.output$ability/dotamatch.output$s.e.>1.4 & !is.na(dotamatch.output$s.e.)),]
 team_names <- rownames(dotamatch.output)
 dotamatch.abilities <- dotamatch.output$ability
 names(dotamatch.abilities) <- team_names
@@ -54,6 +59,28 @@ names(dotamatch.abilities) <- team_names
 dota_probs <- outer(dotamatch.abilities, dotamatch.abilities, prob_BT)
 diag(dota_probs) <- 0
 dota_probs <- melt(dota_probs)
+colnames(dota_probs)[1] <- "Team1"
+colnames(dota_probs)[2] <- "Team2"
 
-Kelly(dota_probs, "3", "4", 1.6, 1.5)
+coeffs <- read.csv("Coefs.csv", stringsAsFactors=FALSE)
+coeffs <- merge(coeffs, dota_probs)
+coeffs_test <- coeffs[,c(5,6,11)]
+coeffs_test <- as.matrix(coeffs_test)
 
+coeffs$answ1 <- NA
+coeffs$answ2 <- NA
+coeffs$answ1 <- apply (coeffs_test, 1, function(x) (x[3] * x[1] - 1)/(x[1] - 1))
+coeffs$answ2 <- apply (coeffs_test, 1, function(x) ((1-x[3]) * x[2] - 1)/(x[2] - 1))
+coeffs <- coeffs[!(coeffs$answ1<0 & coeffs$answ2<0),]
+coeffs <- coeffs[!(is.na(coeffs$Match_Id)),]
+# coeffs$result1 <- NA
+# coeffs$result2 <- NA
+
+
+
+
+# dota_probs_test <- dota_probs[(dota_probs$Team1=="2642171"),]
+
+
+
+# head (dota_probs, 90000)
