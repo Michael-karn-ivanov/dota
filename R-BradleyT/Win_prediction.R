@@ -141,8 +141,36 @@ colnames(dota_probs)[1] <- "Team1"
 colnames(dota_probs)[2] <- "Team2"
 head (dota_probs, 5)
 
-#грузим коэффициенты и объединяем с рассчитанными вероятностями
-coeffs <- read.csv("Coefs.csv", stringsAsFactors=FALSE)
+#грузим коэффициенты, разница между часами EGB и DOTABUFF - час (3600 секунд)
+coeffs <- read.csv("Coeffs.csv", stringsAsFactors=FALSE)
+colnames(coeffs) <- c("egb_id", "date", "coeff1", "coeff2", "Team1", "Team2", "Type", "league", "Map", "blabla")
+coeffs$date <- coeffs$date - 3600
+coeffs$date <- as.POSIXct(coeffs$date, origin = "1969-12-19", tz="UTC")
+
+#грузим команды
+teams <- read.csv("teams.csv", stringsAsFactors=FALSE)
+colnames(teams) <- c("team_id", "team_name", "href")
+
+#ищем id команд из coeffs
+colnames(coeffs) <- c("egb_id", "date", "coeff1", "coeff2", "team_name", "Team2", "Type", "league", "Map", "blabla")
+coeffs <- merge(coeffs, teams, all.x = TRUE)
+colnames(coeffs) <- c("Team1", "egb_id", "date", "coeff1", "coeff2", "team_name", "Type", "league", "Map", "blabla", "Team1_id", "Team1_href")
+coeffs <- merge(coeffs, teams, all.x = TRUE)
+colnames(coeffs) <- c("Team2", "Team1", "egb_id", "date", "coeff1", "coeff2", "Type", "league", "Map", "blabla", "Team1_id", "Team1_href", "Team2_id", "Team2_href")
+
+#ищем команды, которые не нашлись в файле по имени - результат итогового принта должен быть пуст
+coeffs_teams_leaks <- as.data.frame(cbind(coeffs$Team1, coeffs$Team2, coeffs$Team1_id, coeffs$Team2_id))
+colnames(coeffs_teams_leaks) <- c("Team1", "Team2","Team1_id", "Team2_id")
+coeffs_teams_leaks <- coeffs_teams_leaks [is.na(coeffs_teams_leaks$Team1_id) | is.na(coeffs_teams_leaks$Team2_id),]
+print (coeffs_teams_leaks)
+
+
+
+#первый шаг - через маппинг команд и названий лиг, порядок матча вытаскиваем настоящий Id матча с EGB
+#второй шаг - для каждого матча ОТДЕЛЬНО выполяем модель по данным, имеющимся на момент матча
+#если результат удовлетворяет статистической значимости и Келли - виртуально ставим
+#третий шаг - проверяем итоговую сумму
+
 coeffs <- merge(coeffs, dota_probs)
 
 #считаем Келли
