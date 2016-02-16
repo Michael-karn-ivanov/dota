@@ -20,11 +20,29 @@ class CoeffProvider:
                 continue
             team1 = bet['gamer_1']['nick']
             team2 = bet['gamer_2']['nick']
-            coeffs.append(Coeff(bet['id'], bet['date'], bet['coef_1'], bet['coef_2'], team1, team2, 'Total', bet['tourn'], bet['id'], 'NA'))
+            result = ''
+            if bet['gamer_1']['win'] == 1 and bet['gamer_2']['win'] == 0:
+                result = 'win1'
+            elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 1:
+                result = 'win2'
+            elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 0:
+                result = 'draw'
+            else:
+                result = 'NA'
+            coeffs.append(Coeff(bet['id'], bet['date'], bet['coef_1'], bet['coef_2'], team1, team2, 'Total', bet['tourn'], bet['id'], 'NA', result))
             nested_bets = bet['nb_arr']
             for nested in nested_bets:
                 bet_type = 'NA'
                 map = 'NA'
+                result = ''
+                if bet['gamer_1']['win'] == 1 and bet['gamer_2']['win'] == 0:
+                    result = 'win1'
+                elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 1:
+                    result = 'win2'
+                elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 0:
+                    result = 'draw'
+                else:
+                    result = 'NA'
                 if nested['gamer_1']['nick'] == 'Map 1':
                     bet_type = 'GameResult'
                     map = 'Map1'
@@ -55,7 +73,7 @@ class CoeffProvider:
                 else:
                     bet_type = nested['gamer_1']['nick']
                     map = nested['gamer_2']['nick']
-                coeffs.append(Coeff(nested['id'], nested['date'], nested['coef_1'], nested['coef_2'], team1, team2, bet_type, bet['tourn'], bet['id'], map))
+                coeffs.append(Coeff(nested['id'], nested['date'], nested['coef_1'], nested['coef_2'], team1, team2, bet_type, bet['tourn'], bet['id'], map, result))
         return coeffs
 
 
