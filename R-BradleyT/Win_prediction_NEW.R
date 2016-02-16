@@ -18,10 +18,14 @@ time_frame = 120 #период анализа данных
 streak_time = 5 #длительность периода, победы в котором считаются влияющими на результат
 streak_val = 1 #кол-во матчей в стрике за Х дней, говорящее о полноте данных
 
+
 #обработка данных
 #matches <- data_setup("matches.csv")
 
+#тут уже должны быть коэффициенты
   temp <- read.csv("matches.csv", stringsAsFactors=FALSE)
+  temp$coeff1 <- NA
+  temp$coeff2 <- NA
   temp$date <- as.Date(temp$date)
   temp$streak_date <- NA
   temp$streak_date <- temp$date - streak_time
@@ -40,21 +44,21 @@ streak_val = 1 #кол-во матчей в стрике за Х дней, го�
   
   #считаем кол-во сыгранных каждой командой матчей за Х дней до текущего матча
   temp$streak1 <- apply (temp, 1, function(x)
-    nrow(temp[temp$date >= x[8] & temp$radiant_id == x[3] & temp$match_id < x[1],]) + 
-      nrow(temp[temp$date >= x[8] & temp$dire_id == x[3] & temp$match_id < x[1] ,]))
+    nrow(temp[temp$date >= x[10] & temp$radiant_id == x[3] & temp$match_id < x[1],]) + 
+      nrow(temp[temp$date >= x[10] & temp$dire_id == x[3] & temp$match_id < x[1] ,]))
   
   temp$streak2 <- apply (temp, 1, function(x) 
-    nrow(temp[temp$date >= x[8] & temp$radiant_id == x[4] & temp$match_id < x[1],]) + 
-      nrow(temp[temp$date >= x[8] & temp$dire_id == x[4] & temp$match_id < x[1] ,]))
+    nrow(temp[temp$date >= x[10] & temp$radiant_id == x[4] & temp$match_id < x[1],]) + 
+      nrow(temp[temp$date >= x[10] & temp$dire_id == x[4] & temp$match_id < x[1] ,]))
  
   #считаем кол-во выигранных каждой командой матчей за Х дней до текущего матча 
   temp$winstreak1 <- apply (temp, 1, function(x) 
-    nrow(temp[temp$date >= x[8] & temp$radiant_id == x[3] & temp$match_id < x[1] & temp$winner == "radiant",]) + 
-      nrow(temp[temp$date >= x[8] & temp$dire_id == x[3] & temp$match_id < x[1] & temp$winner == "dire",]))
+    nrow(temp[temp$date >= x[10] & temp$radiant_id == x[3] & temp$match_id < x[1] & temp$winner == "radiant",]) + 
+      nrow(temp[temp$date >= x[10] & temp$dire_id == x[3] & temp$match_id < x[1] & temp$winner == "dire",]))
   
   temp$winstreak2 <- apply (temp, 1, function(x) 
-    nrow(temp[temp$date >= x[8] & temp$radiant_id == x[4] & temp$match_id < x[1] & temp$winner == "radiant",]) + 
-      nrow(temp[temp$date >= x[8] & temp$dire_id == x[4] & temp$match_id < x[1] & temp$winner == "dire",]))
+    nrow(temp[temp$date >= x[10] & temp$radiant_id == x[4] & temp$match_id < x[1] & temp$winner == "radiant",]) + 
+      nrow(temp[temp$date >= x[10] & temp$dire_id == x[4] & temp$match_id < x[1] & temp$winner == "dire",]))
   
   #обнуляем слишком короткие стрики, как подозрение на некорректные данные в источнике
   temp[temp$streak1 < streak_val,"streak1"] <- NA
@@ -63,7 +67,7 @@ streak_val = 1 #кол-во матчей в стрике за Х дней, го�
   temp[is.na(temp$streak2),"win_streak2"] <- NA
   
   #считаем пропорцию побед в стрике
-  temp_test <- temp[,c(9,10,13,14)]
+  temp_test <- temp[,c(11,12,15,16)]
   temp_test <- as.matrix(temp_test)
   temp$winstreak_percent1 <- apply (temp_test, 1, function(x) x[2]/x[1])
   temp$winstreak_percent2 <- apply (temp_test, 1, function(x) x[4]/x[3])
@@ -93,7 +97,7 @@ streak_val = 1 #кол-во матчей в стрике за Х дней, го�
   levels(temp[,"winner_id"]) <- unique(c(temp[,"winner_id"], temp[,"loser_id"]))
   levels(temp[,"loser_id"]) <- unique(c(temp[,"winner_id"], temp[,"loser_id"]))
   
-  #temp$result <- rep (1, nrow (temp))
+  temp$result <- rep (1, nrow (temp))
   
   #чистим матчи с неполными данными
   temp <- temp[!is.na (temp$winner_id),]
@@ -113,18 +117,35 @@ streak_val = 1 #кол-во матчей в стрике за Х дней, го�
 matches <- temp
 
 #создаем фреймы для модели
-winner.frame <- as.data.frame(cbind(matches$winner_id, matches$match_id, matches$winner_winstreak, matches$winner_winstreak_per))
-loser.frame <- as.data.frame(cbind(matches$loser_id, matches$match_id, matches$loser_winstreak, matches$loser_winstreak_per))
-colnames(winner.frame) <- c("id", "match_id","winstreak", "winstreak_percent")
-colnames(loser.frame) <- c("id", "match_id", "winstreak", "winstreak_percent")
+winner.frame <- as.data.frame(cbind(matches$date, matches$winner_id, matches$match_id, matches$winner_winstreak, matches$winner_winstreak_per))
+loser.frame <- as.data.frame(cbind(matches$date, matches$loser_id, matches$match_id, matches$loser_winstreak, matches$loser_winstreak_per))
+colnames(winner.frame) <- c("date", "id", "match_id","winstreak", "winstreak_percent")
+colnames(loser.frame) <- c("date", "id", "match_id", "winstreak", "winstreak_percent")
 winner.frame$match_id <- as.factor(winner.frame$match_id)
 loser.frame$match_id <- as.factor(loser.frame$match_id)
 winner.frame$id <- as.factor(winner.frame$id)
 loser.frame$id <- as.factor(loser.frame$id)
 
+min_date <- as.Date("2015/12/01")
+max_date <- as.Date("2015/12/15")
+
+#пока так, проверяем работу цикла
+#min_date = max_date
+
+days <- seq(from=min_date, to=max_date,by='days' )
+matches$value1 <- NA
+
+#для каждого дня прогоняем модель на данных до этого дня и считаем вероятности матчей этого дня
+for (i in seq_along(days))
+{
+#print (days[i])}
+winner.frame.temp <- winner.frame [(winner.frame$date < days[i]),]
+loser.frame.temp <- loser.frame [(loser.frame$date < days[i]),]
+matches.temp <- matches [(matches$date < days[i]),]
+
 #модель с учетом стриков
-summary(dotamatch.model <- BTm(result, player1 = winner.frame, 
-                               player2 = loser.frame, formula = ~ id + winstreak + winstreak_percent,data = matches, 
+summary(dotamatch.model <- BTm(result, player1 = winner.frame.temp, 
+                               player2 = loser.frame.temp, formula = ~ id + winstreak + winstreak_percent,data = matches.temp, 
                                id = "id"))
 
 dotamatch.output <- data.frame(BTabilities(dotamatch.model))
@@ -137,49 +158,32 @@ names(dotamatch.abilities) <- team_names
 dota_probs <- outer(dotamatch.abilities, dotamatch.abilities, prob_BT)
 diag(dota_probs) <- 0
 dota_probs <- melt(dota_probs)
-colnames(dota_probs)[1] <- "Team1"
-colnames(dota_probs)[2] <- "Team2"
-head (dota_probs, 5)
+colnames(dota_probs)[1] <- "radiant_id"
+colnames(dota_probs)[2] <- "dire_id"
+#head (dota_probs, 100)
 
-#грузим коэффициенты, разница между часами EGB и DOTABUFF - час (3600 секунд)
-coeffs <- read.csv("Coeffs.csv", stringsAsFactors=FALSE)
-colnames(coeffs) <- c("egb_id", "date", "coeff1", "coeff2", "Team1", "Team2", "Type", "league", "Map", "blabla")
-coeffs$date <- coeffs$date - 3600
-coeffs$date <- as.POSIXct(coeffs$date, origin = "1969-12-19", tz="UTC")
+matches.date <- matches[(matches$date == days[i]),]
+matches.date <- merge (matches.date, dota_probs)
+matches.date <- matches.date[,c(3,29)]
+colnames(matches.date) <- c("match_id", "temp_value")
+matches <- merge (matches, matches.date, all.x=TRUE)
+matches[!is.na(matches$temp_value),"value1"] <- matches[!is.na(matches$temp_value),"temp_value"]
+matches$temp_value <- NULL
+}
 
-#грузим команды
-teams <- read.csv("teams.csv", stringsAsFactors=FALSE)
-colnames(teams) <- c("team_id", "team_name", "href")
-
-#ищем id команд из coeffs
-colnames(coeffs) <- c("egb_id", "date", "coeff1", "coeff2", "team_name", "Team2", "Type", "league", "Map", "blabla")
-coeffs <- merge(coeffs, teams, all.x = TRUE)
-colnames(coeffs) <- c("Team1", "egb_id", "date", "coeff1", "coeff2", "team_name", "Type", "league", "Map", "blabla", "Team1_id", "Team1_href")
-coeffs <- merge(coeffs, teams, all.x = TRUE)
-colnames(coeffs) <- c("Team2", "Team1", "egb_id", "date", "coeff1", "coeff2", "Type", "league", "Map", "blabla", "Team1_id", "Team1_href", "Team2_id", "Team2_href")
-
-#ищем команды, которые не нашлись в файле по имени - результат итогового принта должен быть пуст
-coeffs_teams_leaks <- as.data.frame(cbind(coeffs$Team1, coeffs$Team2, coeffs$Team1_id, coeffs$Team2_id))
-colnames(coeffs_teams_leaks) <- c("Team1", "Team2","Team1_id", "Team2_id")
-coeffs_teams_leaks <- coeffs_teams_leaks [is.na(coeffs_teams_leaks$Team1_id) | is.na(coeffs_teams_leaks$Team2_id),]
-print (coeffs_teams_leaks)
-
-
-
-#первый шаг - через маппинг команд и названий лиг, порядок матча вытаскиваем настоящий Id матча с EGB
-#второй шаг - для каждого матча ОТДЕЛЬНО выполяем модель по данным, имеющимся на момент матча
-#если результат удовлетворяет статистической значимости и Келли - виртуально ставим
-#третий шаг - проверяем итоговую сумму
-
-coeffs <- merge(coeffs, dota_probs)
+#посчитали вероятности победы radiant, теперь то же самое для dire
+matches_test <- matches[,c(28)]
+matches_test <- as.matrix(matches_test)
+matches$value2 <- NA
+matches$value2 <- apply (matches_test, 1, function(x) (1-x[1]))
 
 #считаем Келли
-coeffs_test <- coeffs[,c(5,6,11)]
+coeffs_test <- matches[,c(8,9,28,29)]
 coeffs_test <- as.matrix(coeffs_test)
 coeffs$answ1 <- NA
 coeffs$answ2 <- NA
 coeffs$answ1 <- apply (coeffs_test, 1, function(x) (x[3] * x[1] - 1)/(x[1] - 1))
-coeffs$answ2 <- apply (coeffs_test, 1, function(x) ((1-x[3]) * x[2] - 1)/(x[2] - 1))
+coeffs$answ2 <- apply (coeffs_test, 1, function(x) (x[4] * x[2] - 1)/(x[2] - 1))
 
 #удаляем не плюсовые строки
 coeffs <- coeffs[!(coeffs$answ1<edge & coeffs$answ2<edge),]
