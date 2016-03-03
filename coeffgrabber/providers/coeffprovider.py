@@ -42,11 +42,11 @@ class CoeffProvider:
                     bet_type = 'NA'
                     map = 'NA'
                     result = ''
-                    if bet['gamer_1']['win'] == 1 and bet['gamer_2']['win'] == 0:
+                    if nested['gamer_1']['win'] == 1 and nested['gamer_2']['win'] == 0:
                         result = 'win1'
-                    elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 1:
+                    elif nested['gamer_1']['win'] == 0 and nested['gamer_2']['win'] == 1:
                         result = 'win2'
-                    elif bet['gamer_1']['win'] == 0 and bet['gamer_2']['win'] == 0:
+                    elif nested['gamer_1']['win'] == 0 and nested['gamer_2']['win'] == 0:
                         result = 'draw'
                     else:
                         result = 'NA'
