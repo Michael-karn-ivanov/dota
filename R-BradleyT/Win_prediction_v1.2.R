@@ -136,63 +136,23 @@ FB_data <- FB_data[FB_data$loser %in% FB_data$winner, ]
 FB_data <- FB_data[FB_data$winner %in% FB_data$loser, ]
 
 #создаем фреймы для модели
-winner.frame <- as.data.frame(cbind(FB_data$date, FB_data$winner, FB_data$bet, FB_data$winner_winstreak, FB_data$winner_winstreak_per))
-loser.frame <- as.data.frame(cbind(FB_data$date, FB_data$loser, FB_data$bet, FB_data$loser_winstreak, FB_data$loser_winstreak_per))
-colnames(winner.frame) <- c("date", "id", "bet","winstreak", "winstreak_percent")
-colnames(loser.frame) <- c("date", "id", "bet", "winstreak", "winstreak_percent")
+winner.frame <- as.data.frame(cbind(FB_data$winner, FB_data$bet))
+loser.frame <- as.data.frame(cbind(FB_data$loser, FB_data$bet))
+colnames(winner.frame) <- c("id", "bet")
+colnames(loser.frame) <- c("id", "bet")
 winner.frame$bet <- as.factor(winner.frame$bet)
 loser.frame$bet <- as.factor(loser.frame$bet)
 winner.frame$id <- as.factor(winner.frame$id)
 loser.frame$id <- as.factor(loser.frame$id)
-winner.frame$winstreak <- as.numeric(winner.frame$winstreak)
-loser.frame$winstreak <- as.numeric(loser.frame$winstreak)
-winner.frame$winstreak_percent <- as.numeric(winner.frame$winstreak_percent)
-loser.frame$winstreak_percent <- as.numeric(loser.frame$winstreak_percent)
-
-winner.frame[winner.frame$winstreak_percent == "NaN","winstreak_percent"] <- "0"
-loser.frame[loser.frame$winstreak_percent == "NaN","winstreak_percent"] <- "0"
-
-winner.frame <- winner.frame[,c(2,3)]
-loser.frame <- loser.frame[,c(2,3)]
-FB_data <- FB_data[,c(1,24)]
-
 
 summary(dotamatch.model <- BTm(result, player1 = winner.frame, 
                                player2 = loser.frame,data = FB_data, 
                                id = "id"))
 
-summary(dotamatch.model <- BTm(result, player1 = winner.frame, 
-                               player2 = loser.frame, formula = ~ id + winstreak + winstreak_percent,data = FB_data, 
-                               id = "id"))
-
-
-
-
-
-
-
-
-
-min_date <- as.Date("2016/02/15")
-max_date <- Sys.Date()
-days <- seq(from=min_date, to=max_date,by='days')
-
-#для каждого дня прогоняем модель на данных до этого дня и считаем вероятности матчей этого дня
-for (i in seq_along(days))
-{
-#print (days[i])}
-winner.frame.temp <- winner.frame [(winner.frame$date < days[i]),]
-loser.frame.temp <- loser.frame [(loser.frame$date < days[i]),]
-FB_data.temp <- FB_data [(FB_data$date < days[i]),]
-
-#модель с учетом стриков
-summary(dotamatch.model <- BTm(result, player1 = winner.frame.temp, 
-                               player2 = loser.frame.temp, formula = ~ id + winstreak + winstreak_percent,data = FB_data.temp, 
-                               id = "id"))
-
 dotamatch.output <- data.frame(BTabilities(dotamatch.model))
-dotamatch.output <- dotamatch.output[(dotamatch.output$ability/dotamatch.output$s.e.>Pr & !is.na(dotamatch.output$s.e.)),]
+#dotamatch.output <- dotamatch.output[(dotamatch.output$ability/dotamatch.output$s.e.>Pr & !is.na(dotamatch.output$s.e.)),]
 dotamatch.output <- dotamatch.output[!is.na (dotamatch.output$ability),]
+dotamatch.output$Pr <- apply (dotamatch.output, 1, function(x) (x[1] /x[2]))
 team_names <- rownames(dotamatch.output)
 dotamatch.abilities <- dotamatch.output$ability
 names(dotamatch.abilities) <- team_names
@@ -204,32 +164,7 @@ colnames(dota_probs)[1] <- "team1"
 colnames(dota_probs)[2] <- "team2"
 #head (dota_probs, 100)
 
-temp <- FB_data[(FB_data$date == days[i]),]
-temp <- merge (temp, dota_probs)
-temp <- temp[,c(3,29)]
-colnames(temp) <- c("match", "temp_value")
-FB_data <- merge (FB_data, temp, all.x=TRUE)
-FB_data[!is.na(FB_data$temp_value),"value1"] <- FB_data[!is.na(FB_data$temp_value),"temp_value"]
-FB_data$temp_value <- NULL
-}
 
-#посчитали вероятности победы radiant, теперь то же самое для dire
-matches_test <- matches[,c(28)]
-matches_test <- as.matrix(matches_test)
-matches$value2 <- NA
-matches$value2 <- apply (matches_test, 1, function(x) (1-x[1]))
-
-#считаем Келли
-coeffs_test <- matches[,c(8,9,28,29)]
-coeffs_test <- as.matrix(coeffs_test)
-coeffs$answ1 <- NA
-coeffs$answ2 <- NA
-coeffs$answ1 <- apply (coeffs_test, 1, function(x) (x[3] * x[1] - 1)/(x[1] - 1))
-coeffs$answ2 <- apply (coeffs_test, 1, function(x) (x[4] * x[2] - 1)/(x[2] - 1))
-
-#удаляем не плюсовые строки
-coeffs <- coeffs[!(coeffs$answ1<edge & coeffs$answ2<edge),]
-coeffs <- coeffs[!(is.na(coeffs$Match)),]
 
 
 
