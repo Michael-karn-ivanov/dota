@@ -190,4 +190,4 @@ FB_probs$Pr2 <- apply (temp, 1, function(x) (1-x[1]))
 FB_probs$coeff1 <- apply (temp, 1, function(x) 1/x[1])
 FB_probs$coeff2 <- apply (temp, 1, function(x) (1/(1-x[1])))
 
-
+write.csv(FB_probs, "FB_probs.csv")
