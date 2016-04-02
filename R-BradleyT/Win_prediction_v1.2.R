@@ -11,8 +11,12 @@ prob_BT <- function(ability_1, ability_2) {
   inv_logit(ability_1 - ability_2)
 }
 
+prob_FB <- function(FB_1, FB_2) {
+  (FB_1 + 1 - FB_2)/2
+}
+
 #параметры
-Pr = 0 #граница отсечения значения ability/s.e. Команды со значением меньше исключаются (1.4)
+Pr = 1.035 #граница отсечения значения ability/s.e. Команды со значением меньше исключаются (1.4)
 edge = 0 #граница значения Келли, выше которого ставим
 time_frame = 120 #период анализа данных
 streak_time = 5 #длительность периода, победы в котором считаются влияющими на результат
@@ -41,11 +45,6 @@ FB_data[FB_data$map == "First blood", "Map"] <- NA
 FB_data <- FB_data[,c(1,2,3,4,5,6,7,8,9,11)]
 FB_data$streak_date <- FB_data$date - streak_time
 
-#EGB_temp <- EGB[EGB$Bet_type == "Total" | EGB$Bet_type == "GameResult",c(1,2,10,11)]
-#EGB_temp$num <- apply (EGB_temp, 1, function(x) (sum(EGB_temp$series == x[2])))
-#EGB_temp[EGB_temp$num == 1, c(3)] <- "GameResult"
-#EGB_temp <- EGB_temp[EGB_temp$Bet_type == "GameResult", c(1,2,3,4)]
-#EGB_temp$match <- EGB_temp$bet
 
 #считаем кол-во сыгранных каждой командой матчей за Х дней до текущего матча
 FB_data$streak1 <- apply (FB_data, 1, function(x)
@@ -116,7 +115,7 @@ FB_WL <- merge (FB_pure_win, FB_pure_lose, all = TRUE)
 rm (FB_pure_lose)
 rm (FB_pure_win)
 
-setwd("D:/calculations")
+setwd("C:/Users/������/Dropbox")
 write.csv(FB_WL, "FB_WL.csv")
 
 
@@ -150,9 +149,10 @@ summary(dotamatch.model <- BTm(result, player1 = winner.frame,
                                id = "id"))
 
 dotamatch.output <- data.frame(BTabilities(dotamatch.model))
-#dotamatch.output <- dotamatch.output[(dotamatch.output$ability/dotamatch.output$s.e.>Pr & !is.na(dotamatch.output$s.e.)),]
 dotamatch.output <- dotamatch.output[!is.na (dotamatch.output$ability),]
 dotamatch.output$Pr <- apply (dotamatch.output, 1, function(x) (x[1] /x[2]))
+dotamatch.output$Pr <- abs(dotamatch.output$Pr)
+dotamatch.output <- dotamatch.output[(dotamatch.output$Pr>Pr & !is.na(dotamatch.output$s.e.)),]
 team_names <- rownames(dotamatch.output)
 dotamatch.abilities <- dotamatch.output$ability
 names(dotamatch.abilities) <- team_names
@@ -162,10 +162,32 @@ diag(dota_probs) <- 0
 dota_probs <- melt(dota_probs)
 colnames(dota_probs)[1] <- "team1"
 colnames(dota_probs)[2] <- "team2"
-#head (dota_probs, 100)
 
 
+FB_WL[is.na(FB_WL$wins),"wins"] <- 0
+FB_WL[is.na(FB_WL$loses),"loses"] <- 0
+temp <- FB_WL[,c(2,3)]
+temp <- as.matrix(temp)
+FB_WL$share <- apply (temp, 1, function(x) (x[1]/(x[1]+x[2])))
+FB_WL$total <- apply (temp, 1, function(x) (x[1]+x[2]))
+rm(temp)
+FB_WL[FB_WL$total < 3,"share"] <- 0.5
 
 
+FB.shares <- FB_WL$share
+names(FB.shares) <- FB_WL$team
+FB_probs <- outer(FB.shares, FB.shares, prob_FB)
+diag(FB_probs) <- 0
+FB_probs <- melt(FB_probs)
+
+colnames(FB_probs)[1] <- "team1"
+colnames(FB_probs)[2] <- "team2"
+colnames(FB_probs)[3] <- "Pr1"
+
+temp <- FB_probs[,c(3)]
+temp <- as.matrix(temp)
+FB_probs$Pr2 <- apply (temp, 1, function(x) (1-x[1]))
+FB_probs$coeff1 <- apply (temp, 1, function(x) 1/x[1])
+FB_probs$coeff2 <- apply (temp, 1, function(x) (1/(1-x[1])))
 
 

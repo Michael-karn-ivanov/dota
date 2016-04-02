@@ -1,93 +1,111 @@
 "","team","wins","loses"
 "1","@Phoenix",3,1
-"2","Ad Finem",2,5
+"2","Ad Finem",5,7
 "3","Alliance",1,3
 "4","Alliance (Live)",1,3
-"5","Alternate",8,3
-"6","Arcanys",3,2
-"7","Avengers",3,1
-"8","Averia",2,1
-"9","BANGKOK.ALLSTAR",1,NA
-"10","Bangkok.Dynamo",1,NA
-"11","Beyond Infinity",1,1
-"12","Cant Say Wips",1,1
-"13","CDEC Youth",1,2
-"14","CDEC.A",1,1
-"15","compLexity",6,3
-"16","compLexity (Live)",3,1
-"17","COOKISS",5,6
-"18","Danish Bears",6,8
-"19","DiG",2,1
-"20","Ehome",NA,1
-"21","Ehome (Live)",NA,1
-"22","Elements one",2,1
-"23","Elite Wolves",5,2
-"24","Enemy",2,3
-"25","Enso",NA,2
-"26","EverNova",NA,4
-"27","Evil Geniuses",11,7
-"28","Evil Geniuses (Live)",1,1
-"29","Execration",NA,2
-"30","First Departure",8,3
-"31","Fnatic",13,12
-"32","Fnatic (Live)",1,3
-"33","Gse7en",2,2
-"34","hehe united",2,1
-"35","iG Vitality",3,1
-"36","InFamous",1,3
-"37","Kaipi",3,3
-"38","LGD (Live)",1,NA
-"39","London Conspiracy",NA,2
-"40","Mineski",5,11
-"41","Mineski-X",4,4
-"42","MVP Hot6",2,NA
-"43","MVP Phoenix",6,10
-"44","MVP Phoenix (Live)",1,1
-"45","Nas Ne Dogonyat",NA,4
-"46","Natus Vincere",4,5
-"47","NewBee",1,NA
-"48","NewBee (Live)",1,NA
-"49","Newbie.ph",NA,2
-"50","Next Generation Esports",1,1
-"51","NL5",5,5
-"52","No Diggity",2,NA
-"53","No Logic Gaming",NA,2
-"54","Not Today",3,NA
-"55","OG",4,3
-"56","OG (Live)",3,2
-"57","Oogway",2,NA
-"58","paiN Gaming",2,NA
-"59","Power Rangers",8,6
-"60","Pries",4,4
-"61","Prodota Gaming",9,7
-"62","Rave",4,4
-"63","Redemption",2,NA
-"64","RexRegumQeon",1,4
-"65","Samurai Champloo",1,1
-"66","SFZ",1,2
-"67","SFZ Young",1,2
-"68","Shazam",5,4
-"69","Signature.TrusT",2,1
-"70","Singapore Rejects",NA,3
-"71","Team Bad English",3,8
-"72","Team Empire",1,2
-"73","Team Freedom",NA,4
-"74","Team Liquid",3,5
-"75","Team Secret",7,5
-"76","Team Secret (Live)",1,NA
-"77","Team Spirit",1,1
-"78","Team Taring",3,2
-"79","The Mongolz",1,1
-"80","TnC",8,7
-"81","Tornado Rox",5,3
-"82","TShow",4,NA
-"83","Vega Squadron",2,4
-"84","VG.R",3,5
-"85","Vici Gaming",5,2
-"86","Virtus.pro",NA,1
-"87","Virtus.pro (Live)",NA,1
-"88","WarriorsGaming",3,3
-"89","Wings Gaming",2,4
-"90","Wu Jie",1,1
-"91","Yellow Submarine",5,5
-"92","Young And Wild",1,NA
+"5","Alternate",13,9
+"6","Animal Kingdom",NA,2
+"7","Arcanys",3,3
+"8","Avengers",3,5
+"9","Averia",2,1
+"10","BANGKOK.ALLSTAR",1,NA
+"11","Bangkok.Dynamo",1,NA
+"12","Beyond Infinity",3,1
+"13","Cant Say Wips",1,1
+"14","CDEC",4,1
+"15","CDEC Youth",1,4
+"16","CDEC.A",4,3
+"17","compLexity",6,3
+"18","compLexity (Live)",3,1
+"19","COOKISS",6,7
+"20","Danish Bears",9,11
+"21","DiG",2,1
+"22","DUOBAO",1,1
+"23","Ehome",2,2
+"24","Ehome (Live)",NA,1
+"25","Ehome King",2,1
+"26","Elements",1,1
+"27","Elements one",2,1
+"28","Elements PG",1,2
+"29","Elite Wolves",5,2
+"30","Enemy",3,4
+"31","Energy Pacemaker",1,1
+"32","Enso",NA,2
+"33","EverNova",NA,4
+"34","Evil Geniuses",11,7
+"35","Evil Geniuses (Live)",1,1
+"36","Execration",NA,2
+"37","Fantastic Five",3,3
+"38","First Departure",8,5
+"39","Fnatic",19,15
+"40","Fnatic (Live)",1,3
+"41","FTD Club A",1,3
+"42","FTD Club C",2,NA
+"43","Gossip Girls",NA,3
+"44","Gse7en",3,2
+"45","hehe united",2,1
+"46","iG Vitality",5,5
+"47","InFamous",3,5
+"48","Invictus Gaming",1,3
+"49","Kaipi",6,5
+"50","LGD",2,5
+"51","LGD (Live)",1,NA
+"52","London Conspiracy",2,8
+"53","Mineski",6,13
+"54","Mineski-X",4,4
+"55","MVP Hot6",2,NA
+"56","MVP Phoenix",8,18
+"57","MVP Phoenix (Live)",1,1
+"58","Nas Ne Dogonyat",NA,4
+"59","Natus Vincere",4,5
+"60","NewBee",3,2
+"61","NewBee (Live)",1,NA
+"62","Newbie.ph",NA,2
+"63","Next Generation Esports",2,5
+"64","NL5",5,5
+"65","No Diggity",2,2
+"66","No Logic Gaming",NA,2
+"67","Not Today",3,NA
+"68","OG",4,3
+"69","OG (Live)",3,2
+"70","Oogway",2,NA
+"71","paiN Gaming",2,NA
+"72","Polarity",NA,2
+"73","Power Rangers",16,7
+"74","Pries",4,4
+"75","Prodota Gaming",14,10
+"76","Rave",4,4
+"77","Redemption",2,NA
+"78","RexRegumQeon",1,4
+"79","Samurai Champloo",1,1
+"80","SFZ",1,2
+"81","SFZ Young",1,2
+"82","Shazam",12,6
+"83","Signature.TrusT",4,4
+"84","Singapore Rejects",NA,3
+"85","Team Bad English",3,8
+"86","Team Braveheart",1,2
+"87","Team Empire",4,11
+"88","Team Freedom",1,5
+"89","Team Liquid",3,5
+"90","Team Secret",7,5
+"91","Team Secret (Live)",1,NA
+"92","Team Spirit",6,3
+"93","Team Taring",3,2
+"94","The Mongolz",1,1
+"95","TheMongolz",2,2
+"96","TnC",15,8
+"97","Tongfu",3,2
+"98","Tornado Rox",5,3
+"99","TRG",3,NA
+"100","TShow",4,NA
+"101","Vega Squadron",6,5
+"102","VG.R",7,9
+"103","Vici Gaming",11,5
+"104","Virtus.pro",4,2
+"105","Virtus.pro (Live)",NA,1
+"106","WarriorsGaming",6,4
+"107","Wings Gaming",2,7
+"108","Wu Jie",1,1
+"109","Yellow Submarine",5,5
+"110","Young And Wild",1,NA
