@@ -37,6 +37,14 @@ colnames(EGB) <- c("bet", "series", "date", "team1","team2", "win", "league", "c
 EGB$date <- as.Date(EGB$date)
 EGB <- EGB[(EGB$date>"2016/03/01"),]
 
+#еще чистим
+EGB[EGB$team1 == "!Rebels!","team1"] <- "Rebels"
+EGB[EGB$team2 == "!Rebels!","team2"] <- "Rebels"
+EGB[EGB$team1 == "BrooDMotherS","team1"] <- "BroodMothers"
+EGB[EGB$team2 == "BrooDMotherS","team2"] <- "BroodMothers"
+EGB[EGB$team1 == "The Mongolz","team1"] <- "TheMongolz"
+EGB[EGB$team2 == "The Mongolz","team2"] <- "TheMongolz"
+
 #отбираем нужные данные по FB
 FB_data <- EGB[grep("lood", EGB$bet_type),]
 FB_data_temp <- EGB[EGB$bet_type == "FB",]
@@ -341,8 +349,8 @@ write.csv(M_probs_BT, "M_probs_BT.csv")
 write.csv(K_probs_BT, "K_probs_BT.csv")
 
 #быстрая проверка для 2 команд по всем показателям
-team1 = "Vega Squadron"
-team2 = "London Conspiracy"
+team1 = "Alternate"
+team2 = "Pries"
 
 FB_probs[FB_probs$team1 == team1 & FB_probs$team2 == team2,]
 FB_probs_BT[FB_probs_BT$team1 == team1 & FB_probs_BT$team2 == team2,]

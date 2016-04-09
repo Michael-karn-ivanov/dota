@@ -1,0 +1,3 @@
+view-source:http://egb.com/ajax.php?act=UpdateTableBets&ajax=update&fg=1&ind=tables&limit=0&st=0&type=modules&ut=0
+
+http://egb.com/ajax.php?act=UpdateTableBets&ajax=update&fg=1&ind=tables&limit=0&st=0&type=modules&ut=0
