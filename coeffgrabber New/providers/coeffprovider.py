@@ -22,10 +22,11 @@ class CoeffProvider:
             response = json.loads(data)
         bets = response['bets']
         for bet in bets:
-            if not bet['game'] == 'Dota2':
+            if ((bet['game'] != 'Dota2') & (bet['game'] != 'LoL') & (bet['game'] != 'Counter-Strike')):
                 continue
-            team1 = bet['gamer_1']['nick']
-            team2 = bet['gamer_2']['nick']
+            game = bet['game']
+	    team1 = bet['gamer_1']['nick'].encode('utf-8')
+            team2 = bet['gamer_2']['nick'].encode('utf-8')
             result = ''
             if bet['gamer_1']['win'] == 1 and bet['gamer_2']['win'] == 0:
                 result = 'win1'
@@ -35,7 +36,7 @@ class CoeffProvider:
                 result = 'draw'
             else:
                 result = 'NA'
-            coeffs.append(Coeff(bet['id'], bet['date'], bet['coef_1'], bet['coef_2'], team1, team2, 'Total', bet['tourn'], bet['id'], 'NA', result))
+            coeffs.append(Coeff(bet['id'], game, bet['date'], bet['coef_1'], bet['coef_2'], team1, team2, 'Total', bet['tourn'], bet['id'], 'NA', result))
             if 'nb_arr' in bet:
                 nested_bets = bet['nb_arr']
                 for nested in nested_bets:
@@ -80,7 +81,7 @@ class CoeffProvider:
                     else:
                         bet_type = nested['gamer_1']['nick']
                         map = nested['gamer_2']['nick']
-                    coeffs.append(Coeff(nested['id'], nested['date'], nested['coef_1'], nested['coef_2'], team1, team2, bet_type, bet['tourn'], bet['id'], map, result))
+                    coeffs.append(Coeff(nested['id'], game, nested['date'], nested['coef_1'], nested['coef_2'], team1, team2, bet_type, bet['tourn'], bet['id'], map, result))
         return coeffs
 
 
