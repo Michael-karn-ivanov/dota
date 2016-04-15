@@ -85,6 +85,7 @@ D2_Result$map <- NA
 D2_Result$fb <- NA
 D2_Result$kills <- NA
 D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "map"] <- D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "team1"]
+#D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "KellyMap"] <- D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, D2_future$map_coeff1 - D2_future$map_pred1]
 D2_Result[D2_future$map_coeff2 - D2_future$map_pred2 > bet_edge, "map"] <- D2_Result[D2_future$map_coeff2 - D2_future$map_pred2 > bet_edge, "team2"]
 D2_Result[D2_future$fb_coeff1 - D2_future$fb_wl_pred1 > bet_edge, "fb"] <- D2_Result[D2_future$fb_coeff1 - D2_future$fb_wl_pred1 > bet_edge, "team1"]
 D2_Result[D2_future$fb_coeff2 - D2_future$fb_wl_pred2 > bet_edge, "fb"] <- D2_Result[D2_future$fb_coeff2 - D2_future$fb_wl_pred2 > bet_edge, "team2"]
@@ -94,7 +95,7 @@ D2_Result[D2_future$kills_coeff1 - D2_future$kills_pred1 > bet_edge, "kills"] <-
 D2_Result[D2_future$kills_coeff2 - D2_future$kills_pred2 > bet_edge, "kills"] <- D2_Result[D2_future$kills_coeff2 - D2_future$kills_pred2 > bet_edge, "team2"]
 
 D2_Result$game <- "Dota"
-D2_Result <- D2_Result[,c(21,3,1,2,18,19,20)]
+D2_Result <- D2_Result[,c("game", "date", "team1", "team2", "map", "fb", "kills")]
 D2_Result <- D2_Result[(!is.na(D2_Result$map) | !is.na(D2_Result$fb) | !is.na(D2_Result$kills)),]
 
 
@@ -185,7 +186,7 @@ LoL_Result[LoL_future$kills_coeff1 - LoL_future$kills_pred1 > bet_edge, "kills"]
 LoL_Result[LoL_future$kills_coeff2 - LoL_future$kills_pred2 > bet_edge, "kills"] <- LoL_Result[LoL_future$kills_coeff2 - LoL_future$kills_pred2 > bet_edge, "team2"]
 
 LoL_Result$game <- "LoL"
-LoL_Result <- LoL_Result[,c(21,3,1,2,18,19,20)]
+LoL_Result <- LoL_Result[,c("game", "date", "team1", "team2", "map", "fb", "kills")]
 LoL_Result <- LoL_Result[(!is.na(LoL_Result$map) | !is.na(LoL_Result$fb) | !is.na(LoL_Result$kills)),]
 
 Result <- merge(D2_Result, LoL_Result, all = TRUE)
@@ -245,14 +246,14 @@ CS_Result[CS_future$gun_coeff1 - CS_future$gun_pred1 > bet_edge, "gun"] <- CS_Re
 CS_Result[CS_future$gun_coeff1 - CS_future$gun_pred1 > bet_edge, "gun"] <- CS_Result[CS_future$gun_coeff1 - CS_future$gun_pred1 > bet_edge, "team2"]
 
 CS_Result$game <- "CS"
-CS_Result <- CS_Result[,c(14,3,1,2,12,13)]
+CS_Result <- CS_Result[,c("game","date","team1","team2","map","gun")]
 CS_Result <- CS_Result[(!is.na(CS_Result$gun) | !is.na(CS_Result$map)),]
 
 Result <- merge(Result, CS_Result, all=TRUE)
 
 currentWd = getwd()
 setwd(OutputPath)
-write.csv(Result, paste("Result.csv", format(Sys.time(), "%Y-%m-%d-%H-%m-%s")))
+write.table(Result, paste("Result.csv", format(Sys.time(), "%Y-%m-%d-%H-%M")), sep="\t", row.names = FALSE)
 write.csv(D2_FB_WL, "D2_FB_WL.csv")
 write.csv(LoL_FB_WL, "LoL_FB_WL.csv")
 setwd(currentWd)
