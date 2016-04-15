@@ -20,8 +20,8 @@ time_frame = 60*24*60*60 #временнј€ граница анализа данных в секундах
 bet_edge = 0.1 #граница разницы предсказани€ и коэффициента, выше которой ставим
 
 #собираем данные из всех .csv за все дни
-files = list.files(path = "D:/calculations/coeffgrabber New/Data", pattern="*.csv")
-setwd("D:/calculations/coeffgrabber New/Data")
+files = list.files(path = "C:/dev/dota/coeffgrabber New/Data", pattern="*.csv")
+setwd("C:/dev/dota/coeffgrabber New/Data")
 EGB <- read.csv("!EGB.csv", header = FALSE, stringsAsFactors=FALSE)
 
 for (i in 1:(length(files)-1)) 
@@ -1077,7 +1077,7 @@ CS_Result <- CS_Result[(!is.na(CS_Result$gun) | !is.na(CS_Result$map)),]
 Result <- merge(Result, CS_Result, all=TRUE)
 
 #выгрузка в DropBox
-setwd("C:/Users/ѕривет/Dropbox")
+setwd("C:/dev/dota_results")
 write.csv(Result, "Result.csv")
 write.csv(D2_FB_WL, "D2_FB_WL.csv")
 write.csv(LoL_FB_WL, "LoL_FB_WL.csv")
