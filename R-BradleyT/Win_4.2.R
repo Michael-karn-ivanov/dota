@@ -152,7 +152,7 @@ colnames(LoL_future)[8] <- "kills_coeff1"
 colnames(LoL_future)[9] <- "kills_coeff2"
 rm(LoL_Kills_data_temp)
 
-LoL_Kills_probs_BT <- build_model(LoL, "lol_kills")
+LoL_Kills_probs_BT <- build_model(LoL_Kills_data, "lol_kills")
 rm(lframe)
 rm(wframe)
 ########
