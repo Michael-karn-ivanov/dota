@@ -84,8 +84,10 @@ D2_Result <- D2_future
 D2_Result$map <- NA
 D2_Result$fb <- NA
 D2_Result$kills <- NA
+D2_Result$KellyMap1 <- NA
+D2_Result$KellyMap2 <- NA
 D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "map"] <- D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "team1"]
-#D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "KellyMap"] <- D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, D2_future$map_coeff1 - D2_future$map_pred1]
+D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge, "KellyMap1"] <- sapply(rownames(D2_Result[D2_future$map_coeff1 - D2_future$map_pred1 > bet_edge,]), function(x) kelly(D2_Result, x, "map_coeff1", "map_pred1"))
 D2_Result[D2_future$map_coeff2 - D2_future$map_pred2 > bet_edge, "map"] <- D2_Result[D2_future$map_coeff2 - D2_future$map_pred2 > bet_edge, "team2"]
 D2_Result[D2_future$fb_coeff1 - D2_future$fb_wl_pred1 > bet_edge, "fb"] <- D2_Result[D2_future$fb_coeff1 - D2_future$fb_wl_pred1 > bet_edge, "team1"]
 D2_Result[D2_future$fb_coeff2 - D2_future$fb_wl_pred2 > bet_edge, "fb"] <- D2_Result[D2_future$fb_coeff2 - D2_future$fb_wl_pred2 > bet_edge, "team2"]
