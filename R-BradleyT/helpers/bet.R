@@ -52,6 +52,7 @@ build_model <- function(dataset, strategy) {
     predicted_FB_WL$total <- apply (temp, 1, function(x) (x[1]+x[2]))
     rm(temp)
     predicted_FB_WL[predicted_FB_WL$total < 5,"share"] <- NA
+    #predicted_FB_WL[predicted_FB_WL$total < 3,"share"] <- 0.5
     
     #??????? ??????????? ???????? ?????? ???????
     predicted_FB.shares <- predicted_FB_WL$share
@@ -144,7 +145,7 @@ map_prediction <- function(future, model, coeff1Name, coeff2Name) {
 
 kelly <- function(dataset, rowname, coeff_name, prediction_name) {
   K <- dataset[rowname, coeff_name]
-  V <- dataset[rowname, prediction_name]
+  V <- 1/dataset[rowname, prediction_name]
   up <- K * V - 1
   bottom <- K - 1
   return(up/bottom)
