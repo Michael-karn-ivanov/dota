@@ -22,10 +22,8 @@ class CoeffProvider:
             response = json.loads(data)
         bets = response['bets']
         for bet in bets:
-            if ((bet['game'] != 'Dota2') & (bet['game'] != 'LoL') & (bet['game'] != 'Counter-Strike') & (bet['game'] != 'StarCraft2')):
-                continue
             game = bet['game']
-	    team1 = bet['gamer_1']['nick'].encode('utf-8')
+            team1 = bet['gamer_1']['nick'].encode('utf-8')
             team2 = bet['gamer_2']['nick'].encode('utf-8')
             result = ''
             if bet['gamer_1']['win'] == 1 and bet['gamer_2']['win'] == 0:
