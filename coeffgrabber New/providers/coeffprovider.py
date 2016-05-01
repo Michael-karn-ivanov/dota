@@ -2,7 +2,9 @@ import httplib
 import time
 import json
 import sys
+import cfscrape
 import os.path
+import datetime
 from model.coeff import Coeff
 
 __author__ = 'mivanov'
@@ -11,15 +13,27 @@ __author__ = 'mivanov'
 class CoeffProvider:
     _conn = httplib.HTTPConnection('egb.com')
 
-    def get_coeff_list(self):
-        response = None
+    def process_history(self, dao):
+        counter = 0
+        now = datetime.datetime.now()
+        if os.path.exists('./old_history'):
+            for file in os.listdir('./old_history'):
+                print(file)
+                response = None
+                with open('./old_history/' + file) as data_file:
+                    response = json.load(data_file)
+                filename = 'coeffs-{0}-{1}-{2}-{3}-{4}-{5}.csv'.format(now.year, now.month, \
+                                                                       now.day if now.day > 10 else "0" + `now.day`, \
+                                                                       now.hour if now.hour > 10 else "0" + `now.hour`, \
+                                                                       now.minute if now.minute > 10 else "0" + `now.minute`,
+                                                                       counter)
+                coeffs = self.process_response(response)
+                dao.save_coeff_list(coeffs, filename)
+                counter = counter + 1
+        print "done with history"
+
+    def process_response(self, response):
         coeffs = []
-        if os.path.isfile('data.json'):
-            with open('data.json') as data_file:
-                response = json.load(data_file)
-        else:
-            data = self.invoke_url('/ajax.php?act=UpdateTableBets&ajax=update&fg=1&ind=tables&limit=0&st=0&type=modules&ut=0')
-            response = json.loads(data)
         bets = response['bets']
         for bet in bets:
             game = bet['game']
@@ -82,6 +96,17 @@ class CoeffProvider:
                     coeffs.append(Coeff(nested['id'], game, nested['date'], nested['coef_1'], nested['coef_2'], team1, team2, bet_type, bet['tourn'], bet['id'], map, result))
         return coeffs
 
+    def get_coeff_list(self):
+        scraper = cfscrape.create_scraper(js_engine='Node')
+        response = None
+        if os.path.isfile('data.json'):
+            with open('data.json') as data_file:
+                response = json.load(data_file)
+        else:
+            data = scraper.get('http://egb.com/ajax.php?act=UpdateTableBets&ajax=update&fg=1&ind=tables&limit=0&st=0&type=modules&ut=0').content
+            # data = self.invoke_url('/ajax.php?act=UpdateTableBets&ajax=update&fg=1&ind=tables&limit=0&st=0&type=modules&ut=0')
+            response = json.loads(data)
+        return self.process_response(response)
 
     def invoke_url(self, url):
         while True:
